@@ -1,5 +1,5 @@
 {
-  "//": "Portable Claude Code workflow settings TEMPLATE. Copy to ~/.claude/settings.json (global) or <project>/.claude/settings.json (per-project). All hook paths use $HOME and resolve at runtime via the shell — no absolute personal paths, no secrets, no tokens, no MCP auth. The six hooks wire the workflow OS so its discipline actually fires (arm/deny inline builds, gate dispatch briefs, count grind, flag context-fill, name the pattern + verification gate at Stop). Every hook fails OPEN: if a tool is missing or input is odd it no-ops, so a fresh setup never breaks.",
+  "//": "Portable Claude Code workflow settings TEMPLATE. Copy to ~/.claude/settings.json (global) or <project>/.claude/settings.json (per-project). All hook paths use $HOME and resolve at runtime via the shell — no absolute personal paths, no secrets, no tokens, no MCP auth. The permissions below are TRUST LEVEL 1 (Hands-off) — the default, so a bare copy of this template is a sane hands-free config: acceptEdits plus a broad Bash allow run your normal work (edits, tests, git commit/push/merge, builds) without ever prompting. The installer can apply Level 1 (hands-off), 2 (watch-commands: auto-edits + read-only Bash, other commands prompt), or 3 (ask-first: read-only, everything prompts) — all three share this same `ask` seatbelt, which pauses ONLY for a short set of unrecoverable commands (sudo, rm -rf, git push --force, git reset --hard, dd, mkfs, chmod -R, npm publish, repo create/edit) — the kind that can brick a machine or can't be undone. The six hooks wire the workflow OS so its discipline actually fires (arm/deny inline builds, gate dispatch briefs, count grind, flag context-fill, name the pattern + verification gate at Stop). Every hook fails OPEN: if a tool is missing or input is odd it no-ops, so a fresh setup never breaks.",
 
   "permissions": {
     "allow": [
@@ -17,15 +17,20 @@
       "Skill"
     ],
     "ask": [
-      "Bash(git push:*)",
-      "Bash(git merge:*)",
-      "Bash(git push --force:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(gh pr merge:*)",
-      "Bash(gh repo create:*)",
-      "Bash(gh repo edit:*)",
+      "Bash(sudo:*)",
       "Bash(rm -rf:*)",
-      "Bash(npm publish:*)"
+      "Bash(rm -fr:*)",
+      "Bash(rm -r -f:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -f:*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(chmod -R:*)",
+      "Bash(npm publish:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh repo edit:*)"
     ],
     "defaultMode": "acceptEdits"
   },
