@@ -45,6 +45,10 @@ fi
 if [ "$stop_active" = "true" ]; then exit 0; fi
 [ -z "$transcript" ] || [ ! -f "$transcript" ] && exit 0
 
+# Portability: the transcript walk below needs python3. On a jq-only host, no-op
+# (fail open) rather than spewing "python3: command not found" on every Stop.
+command -v python3 >/dev/null 2>&1 || exit 0
+
 # --- pull the text of the assistant's most recent turn ----------------------
 # Transcript is JSONL; take assistant text emitted AFTER the last user message,
 # plus the tool_use names in that span (to detect "took action").
@@ -206,8 +210,10 @@ if [ -n "$lu" ]; then
   fi
 
   # (c) a genuinely-new hard gate / real escalation is ALLOWED (do not block).
+  # Any re-ask carrying a destructive / high-stakes verb is NEVER blocked — the
+  # gate must not nudge "just execute it" on a real "delete prod?" question.
   real_escalation="no"
-  if printf '%s' "$txt" | grep -qiE 'new gate|spends money|irreversible|publish|live data'; then
+  if printf '%s' "$txt" | grep -qiE 'new gate|spends money|irreversible|publish|live data|delete|drop|truncate|prod|production|deploy|migrat|destroy|wipe|force|reset|overwrite|send to|charge'; then
     real_escalation="yes"
   fi
 
