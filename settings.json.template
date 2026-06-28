@@ -1,0 +1,111 @@
+{
+  "//": "Portable Claude Code workflow settings TEMPLATE. Copy to ~/.claude/settings.json (global) or <project>/.claude/settings.json (per-project). All hook paths use $HOME and resolve at runtime via the shell — no absolute personal paths, no secrets, no tokens, no MCP auth. The six hooks wire the workflow OS so its discipline actually fires (arm/deny inline builds, gate dispatch briefs, count grind, flag context-fill, name the pattern + verification gate at Stop). Every hook fails OPEN: if a tool is missing or input is odd it no-ops, so a fresh setup never breaks.",
+
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Grep",
+      "Glob",
+      "Bash",
+      "WebSearch",
+      "WebFetch",
+      "Agent",
+      "Task",
+      "TodoWrite",
+      "Skill"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh repo edit:*)",
+      "Bash(rm -rf:*)",
+      "Bash(npm publish:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/inline-build-deny.sh\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Task|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/dispatch-gate.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/grind-tripwire.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/build-intent-reminder.sh\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/context-fill-flag.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'find \"$HOME/.claude/hooks/state\" -type f -mtime +1 -delete 2>/dev/null; true'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/pattern-marker-gate.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
