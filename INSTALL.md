@@ -73,7 +73,7 @@ Replace `<Recommended when appropriate>` with `(Recommended)` on exactly one lan
 - **B / Co-Pilot Mode / Level 2** when the user mentions learning, watching, auditing commands, curiosity, or wanting to understand what happens.
 - **C / Glass Box Mode / Level 3** when the user mentions a work machine, production, sensitive files, regulated environment, unfamiliar repo, or wanting approval before actions.
 
-If the user answers `A`, use **Level 1**. If `B`, use **Level 2**. If `C`, use **Level 3**. If the user doesn't answer, can't be reached, or the session is non-interactive, use the recommended lane; if no lane is clearly recommended, use **A / Level 1**. (If you run `install.sh`, pass the selected level with `--level N`, set `AOD_LEVEL=N`, or let it default to 1 when non-interactive.)
+If the user answers `A`, use **Level 1**. If `B`, use **Level 2**. If `C`, use **Level 3**. If the user doesn't answer, can't be reached, or the session is non-interactive, use the recommended lane; if no lane is clearly recommended, use **A / Level 1**. (If you run `install.sh`, pass the selected lane with `--level A`, `--level B`, or `--level C`; set `AOD_LEVEL=A/B/C`; or use the numeric 1/2/3 equivalents.)
 
 ## Trust levels
 
@@ -145,13 +145,13 @@ Either way, after fetching, confirm all ten files exist and are non-empty. If an
 
 ## Step 2 — Run the installer
 
-Preferred path — run the bundled script, passing the trust level the user picked (`1`, `2`, or `3`; default `1`). It performs every backup, copy, and the settings merge described in Step 3, idempotently:
+Preferred path — run the bundled script, passing the Momentum Match lane the user picked (`A`, `B`, or `C`; default `A`). It performs every backup, copy, and the settings merge described in Step 3, idempotently:
 
 ```bash
-bash "$TMP/install.sh" --level <N>    # <N> = the level the user chose (default 1)
+bash "$TMP/install.sh" --level <LANE>    # <LANE> = A, B, or C; numeric 1/2/3 also works
 ```
 
-The script applies the chosen level's `permissions`, copies from `$TMP` into `$HOME/.claude`, backs up anything it replaces as `*.bak-<timestamp>`, merges into an existing `settings.json` (via `jq`, or a `python3` fallback if `jq` is absent **or the `jq` merge fails**), preserves an existing `CLAUDE.md` by appending it verbatim below a fenced marker, makes the hooks executable, and prints a verification block. (Run with no `--level` and it prompts; non-interactive, it defaults to Level 1.)
+The script applies the chosen lane's `permissions`, copies from `$TMP` into `$HOME/.claude`, backs up anything it replaces as `*.bak-<timestamp>`, merges into an existing `settings.json` (via `jq`, or a `python3` fallback if `jq` is absent **or the `jq` merge fails**), preserves an existing `CLAUDE.md` by appending it verbatim below a fenced marker, makes the hooks executable, and prints a verification block. (Run with no `--level` and it prompts with the A/B/C lanes; non-interactive, it defaults to A / Level 1.)
 
 If you cannot or should not run the script, do the equivalent **manual steps** in Step 3 instead. Either way, finish with the **verification** in Step 4.
 
@@ -231,7 +231,7 @@ Then clean up the temp dir (`rm -rf "$TMP"`) and give the user a short report:
 - a one-line summary,
 - the checklist of what landed and where,
 - **the path of any `*.bak-<timestamp>` backups** (a backed-up `CLAUDE.md` is a safety net only — the user's prior rules are already preserved inline under the fenced marker, so no hand-merge is needed),
-- **which trust level was applied** (1 Hands-off / 2 Watch-commands / 3 Ask-first) and **how to change it** — re-run the installer with `--level N`, or edit `permissions.defaultMode` / `permissions.allow` in `~/.claude/settings.json` directly (on an existing file the install ADDED the level's permissions and SET its mode, but never removed permissions you already had, so tighten by editing the file),
+- **which trust level was applied** (A Ship Mode / Level 1 Hands-off, B Co-Pilot Mode / Level 2 Watch-commands, or C Glass Box Mode / Level 3 Ask-first) and **how to change it** — re-run the installer with `--level A/B/C` or numeric `--level 1/2/3`, or edit `permissions.defaultMode` / `permissions.allow` in `~/.claude/settings.json` directly (on an existing file the install ADDED the level's permissions and SET its mode, but never removed permissions you already had, so tighten by editing the file),
 - a `Skipped/Failed: <list, or "None">` line.
 
 If anything failed, say so plainly — do not claim success you did not verify.

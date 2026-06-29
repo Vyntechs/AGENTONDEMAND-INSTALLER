@@ -44,6 +44,8 @@ bash install.sh
 
 `install.sh` does the same thing locally: timestamped backups, idempotent copy into `$HOME/.claude`, a merge into any existing `settings.json` (via `jq`, or a `python3` fallback if `jq` is missing **or the `jq` merge fails** — only an already-invalid `settings.json` is left for you to fix), preservation of any existing `CLAUDE.md` (your prior file is appended verbatim below a fenced marker), and a verification block at the end.
 
+The direct script path uses the same lanes: **A Ship Mode** maps to Level 1, **B Co-Pilot Mode** maps to Level 2, and **C Glass Box Mode** maps to Level 3. Numeric `--level 1/2/3` still works for automation.
+
 **The only manual step, after either option: start a new Claude Code session** so the hooks load — they're read at session start and there is no in-session reload. Re-running is safe — it never duplicates hooks or permissions, and re-copies only changed files (the `settings.json` merge is recomputed each run but adds nothing if unchanged).
 
 ### Prerequisites
@@ -60,9 +62,9 @@ The installer asks **one question** the first time: how hands-off do you want Cl
 - **Level 2 — Watch the commands.** File edits still apply on their own and safe look-around commands (`ls`, `cat`, `grep`, `git status/diff/log`, …) run freely — but any *other* shell command asks first. A middle ground: you see what it's about to run without approving every keystroke.
 - **Level 3 — Ask first.** Claude can read your files but proposes everything else and waits for your yes. Most control, most prompts — good for a brand-new machine or a repo you want to be careful with.
 
-**It's a one-time pick.** A non-interactive install (e.g. `curl … | bash`) defaults to Level 1 and says so. You can also choose up front without the prompt: `bash install.sh --level 2`, or `AOD_LEVEL=3 bash install.sh`.
+**It's a one-time pick.** A non-interactive install (e.g. `curl … | bash`) defaults to Ship Mode / Level 1 and says so. You can also choose up front without the prompt: `bash install.sh --level B`, `AOD_LEVEL=C bash install.sh`, or the numeric `--level 2` / `AOD_LEVEL=3` equivalents.
 
-**Change your mind later?** Re-run the installer with `--level N` (1, 2, or 3), or just edit `permissions.defaultMode` / `permissions.allow` in `~/.claude/settings.json` by hand. One caveat for an **existing** `settings.json`: the installer only ever **adds** permissions (and sets the mode for the level you pick) — it never removes a permission you already granted, so to *tighten* a setup, edit the file directly.
+**Change your mind later?** Re-run the installer with `--level A`, `--level B`, or `--level C` (numeric 1/2/3 also works), or just edit `permissions.defaultMode` / `permissions.allow` in `~/.claude/settings.json` by hand. One caveat for an **existing** `settings.json`: the installer only ever **adds** permissions (and sets the mode for the level you pick) — it never removes a permission you already granted, so to *tighten* a setup, edit the file directly.
 
 **Want zero prompts, ever?** Beyond Level 1, set `"defaultMode": "bypassPermissions"` (or launch Claude Code with `--dangerously-skip-permissions`). That removes the seatbelt too — Claude will run *any* command, including destructive ones, with no confirm. Only do this on a machine and project you're fully comfortable handing the keys to.
 
