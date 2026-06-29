@@ -2,6 +2,8 @@
 
 This is one engineer's give-everything Claude Code setup, packaged so you can drop it onto your own machine in one paste. It turns a default Claude Code install into a **director's control plane**: it builds and pressure-tests its own agents on demand, plans before it acts, verifies before it calls anything done, compounds its own mistakes into a lessons file, and delegates work through the file system instead of holding it all in one chat.
 
+The install starts with a tiny **Momentum Match**: Claude reads your situation, shows three elegant Markdown cards, marks the best lane `(Recommended)`, and lets you answer with one letter. No blank form. No hand-merged config. No "tell me your workflow" homework before the useful part starts.
+
 Nothing in here is personal or secret. It's a *universal* `CLAUDE.md` plus the small enforcement layer that makes the rules actually fire. It works identically for any person, project, company, or domain — point it at your own repos and go.
 
 ---
@@ -24,7 +26,7 @@ Paste this to your own Claude Code — it points at this repo's `INSTALL.md` and
 ```
 Read https://raw.githubusercontent.com/Vyntechs/AGENTONDEMAND-INSTALLER/main/INSTALL.md and follow it exactly to install the Universal AI Engineering Operating System into my ~/.claude on this machine.
 
-It is an instruction file plus a few plain-text config files: a CLAUDE.md, six bash hook scripts, a settings.json template, and one agent file. Ask me exactly ONE thing — which of the three trust levels to use (1 = hands-off, 2 = watch-commands, 3 = ask-first; default to Level 1 / hands-off if I don't pick) — then do the whole install autonomously; every other choice is already specified in INSTALL.md.
+It is an instruction file plus a few plain-text config files: a CLAUDE.md, six bash hook scripts, a settings.json template, and one agent file. Ask me exactly ONE thing using the Momentum Match cards in INSTALL.md: infer the best lane from context, mark that lane `(Recommended)`, and let me reply only A, B, or C. Map A to Level 1 / hands-off, B to Level 2 / watch-commands, and C to Level 3 / ask-first. If I do not pick, use the recommended lane, defaulting to A / Level 1 when context is ambiguous. After that, do the whole install autonomously; every other choice is already specified in INSTALL.md.
 
 You have my permission to: fetch those files over the network from the same base URL, run shell commands to copy them, back up anything you replace with a timestamped .bak copy, merge the settings template into my existing settings.json without overwriting my values, and write only under ~/.claude. Make no persistent changes outside ~/.claude — only transient temp files in the system temp dir, removed when you're done — and do not send any of my data anywhere.
 
