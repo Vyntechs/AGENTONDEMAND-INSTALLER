@@ -9,13 +9,14 @@
 # CLAUDE.md is preserved: the OS is installed and your prior file is appended
 # verbatim below a fenced marker.
 #
-# You pick a TRUST LEVEL once (1 Hands-off [default] / 2 Watch-commands / 3 Ask-first)
-# via --level N, the AOD_LEVEL env var, or an interactive prompt. All three share the
-# same unrecoverable-command seatbelt + hooks; they differ only in defaultMode + allow.
+# You pick a Momentum Match lane once (A Ship Mode [default] / B Co-Pilot Mode /
+# C Glass Box Mode) via --level A|B|C, the AOD_LEVEL env var, or an interactive
+# prompt. Numeric 1/2/3 values remain supported. All three share the same
+# unrecoverable-command seatbelt + hooks; they differ only in defaultMode + allow.
 #
 # No personal paths, no secrets, no network calls. Run it from a checkout/clone:
-#     bash install.sh            # picks a trust level interactively (default 1)
-#     bash install.sh --level 2  # or AOD_LEVEL=2 bash install.sh — 1/2/3 as above
+#     bash install.sh            # picks a Momentum Match lane interactively (default A)
+#     bash install.sh --level B  # or AOD_LEVEL=B bash install.sh — A/B/C or 1/2/3
 # Re-running is safe: unchanged files are skipped, identical merges add nothing.
 # -----------------------------------------------------------------------------
 set -euo pipefail
@@ -61,6 +62,15 @@ level_name() {
     2) printf 'Watch commands' ;;
     3) printf 'Ask first' ;;
     *) printf 'Hands-off' ;;
+  esac
+}
+
+normalize_level() {
+  case "$1" in
+    1|A|a) printf '1' ;;
+    2|B|b) printf '2' ;;
+    3|C|c) printf '3' ;;
+    *) return 1 ;;
   esac
 }
 
@@ -125,7 +135,7 @@ build_eff_tpl() {
   cp "$1" "$3"   # no JSON tool: fall back to the template as-is (Level 1)
 }
 
-# Resolve the chosen level: --level N flag > AOD_LEVEL env > interactive prompt > 1.
+# Resolve the chosen level: --level A/B/C flag > AOD_LEVEL env > interactive prompt > A.
 LEVEL=""
 level_src="flag"
 while [ $# -gt 0 ]; do
@@ -138,11 +148,12 @@ done
 if [ -z "$LEVEL" ] && [ -n "${AOD_LEVEL:-}" ]; then LEVEL="$AOD_LEVEL"; level_src="env"; fi
 # Validate a flag/env value; anything but 1/2/3 -> warn + Level 1.
 if [ -n "$LEVEL" ]; then
-  case "$LEVEL" in
-    1|2|3) ;;
-    *) log "WARN: invalid trust level '$LEVEL' (expected 1, 2, or 3) — using Level 1 (Hands-off)."
-       LEVEL=1; level_src="default" ;;
-  esac
+  if normalized="$(normalize_level "$LEVEL")"; then
+    LEVEL="$normalized"
+  else
+    log "WARN: invalid Momentum Match lane '$LEVEL' (expected A, B, C, 1, 2, or 3) — using A / Level 1 (Ship Mode)."
+    LEVEL=1; level_src="default"
+  fi
 fi
 # Interactive prompt only if nothing was specified. Read from /dev/tty so a piped
 # install (curl|bash) can still ask. No tty -> fall through to the default.
@@ -151,20 +162,23 @@ if [ -z "$LEVEL" ]; then
   if [ -t 0 ]; then ttydev="/dev/stdin"
   elif { : </dev/tty; } 2>/dev/null; then ttydev="/dev/tty"; fi
   if [ -n "$ttydev" ]; then
-    log "Choose how hands-off Claude should be (change anytime in ~/.claude/settings.json):"
-    log "  1) Hands-off      — works on its own; only stops for ~14 unrecoverable commands   [recommended]"
-    log "  2) Watch commands — auto-edits + safe look-around; asks before other commands"
-    log "  3) Ask first      — proposes everything, waits for your yes"
-    printf '%s' "Enter 1, 2, or 3 [default 1]: "
+    log "Momentum Match — choose the install lane (change anytime in ~/.claude/settings.json):"
+    log "  A) Ship Mode      — Level 1 hands-off autonomy; only stops for unrecoverable commands   [recommended]"
+    log "  B) Co-Pilot Mode  — Level 2 watch-commands; auto-edits, asks before non-obvious shell"
+    log "  C) Glass Box Mode — Level 3 ask-first; proposes changes before acting"
+    printf '%s' "Reply A, B, or C [default A]: "
     reply=""; read -r reply <"$ttydev" 2>/dev/null || reply=""
-    case "$reply" in
-      1|2|3) LEVEL="$reply"; level_src="prompt" ;;
-      "")    LEVEL=1; level_src="prompt-default" ;;
-      *)     log "WARN: '$reply' is not 1/2/3 — using Level 1 (Hands-off)."; LEVEL=1; level_src="prompt-default" ;;
-    esac
+    if [ -z "$reply" ]; then
+      LEVEL=1; level_src="prompt-default"
+    elif normalized="$(normalize_level "$reply")"; then
+      LEVEL="$normalized"; level_src="prompt"
+    else
+      log "WARN: '$reply' is not A/B/C or 1/2/3 — using A / Level 1 (Ship Mode)."
+      LEVEL=1; level_src="prompt-default"
+    fi
   fi
 fi
-# Non-interactive with no flag/env -> Level 1 (recommended default).
+# Non-interactive with no flag/env -> A / Level 1 (recommended default).
 if [ -z "$LEVEL" ]; then LEVEL=1; level_src="default-noninteractive"; fi
 
 log "Universal AI Engineering OS — installing into $DEST"
@@ -268,7 +282,7 @@ case "$level_src" in
   prompt-default)         level_note=" — default taken at the prompt" ;;
 esac
 log "  Trust level: $LEVEL ($(level_name "$LEVEL"))$level_note"
-log "  Change anytime: re-run with --level N (1=hands-off, 2=watch-commands, 3=ask-first), or edit permissions.defaultMode/allow in $dst."
+log "  Change anytime: re-run with --level A/B/C (or 1/2/3), or edit permissions.defaultMode/allow in $dst."
 
 # The chosen level's defaultMode (for the change-note below).
 case "$LEVEL" in 3) new_mode="default" ;; *) new_mode="acceptEdits" ;; esac
