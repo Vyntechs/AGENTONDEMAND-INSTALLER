@@ -1,6 +1,6 @@
 # INSTALL — read this and follow it exactly
 
-**You are Claude Code. Install the Universal AI Engineering Operating System into this machine's `~/.claude`. Do the whole thing autonomously. Ask the user exactly ONE thing — which trust level (default Level 1, see "Trust level" below) — and every other decision below is already made for you.**
+**You are Claude Code. Install the Universal AI Engineering Operating System into this machine's `~/.claude`. Do the whole thing autonomously. Ask the user exactly ONE thing using the Momentum Match card flow below — then every other decision below is already made for you.**
 
 This file is the authority. Follow it top to bottom. It is idempotent (safe to re-run), it backs up anything it replaces, and it never deletes or transmits user data.
 
@@ -45,13 +45,37 @@ If a **required** prereq is missing (no `bash`, or no way to download at all), S
 
 ---
 
-## Trust level — the ONE question you ask
+## Momentum Match — the ONE question you ask
 
-Ask the user this once; everything else is autonomous:
+Before installing, make one low-friction recommendation. Infer the best lane from the user's context and wording: speed vs. caution, sandbox vs. sensitive machine, shipping vs. learning, and whether they sound like they want autonomy, narration, or control. Do not ask an open-ended question. Do not include an "Other" option. Do not make the user explain themselves.
 
-> **How hands-off should Claude be?** **1) Hands-off** *(default, recommended)* — works on its own, only stops for ~14 unrecoverable commands · **2) Watch commands** — auto-edits + safe read-only shell, asks before any other command · **3) Ask first** — proposes everything and waits for your yes. *Enter 1, 2, or 3 [default 1].*
+Render this as portable Markdown so it works in Claude Code, Codex, ChatGPT, web chat, native apps, and plain terminals:
 
-If the user doesn't answer, can't be reached, or the session is non-interactive, use **Level 1**. (If you run `install.sh`, it asks this itself — answer it with `--level N` or `AOD_LEVEL=N`, or let it default to 1.)
+```markdown
+### Momentum Match
+I can install this three ways. Based on what I can infer, I recommend **<lane name>**.
+
+**A. Ship Mode (<Recommended when appropriate>)**
+Fast install, Level 1 hands-off autonomy, only stops for unrecoverable commands. Best for normal dev machines, sandboxes, and users who want momentum.
+
+**B. Co-Pilot Mode (<Recommended when appropriate>)**
+Smooth install, Level 2 watch-commands, auto-edits but asks before non-obvious shell commands. Best for curious developers who want to learn while it runs.
+
+**C. Glass Box Mode (<Recommended when appropriate>)**
+Careful install, Level 3 ask-first, proposes changes before acting. Best for work machines, sensitive repos, or users who want maximum control.
+
+Reply **A**, **B**, or **C**. You can just pick the recommended lane.
+```
+
+Replace `<Recommended when appropriate>` with `(Recommended)` on exactly one lane and remove the placeholder from the other two lanes. Recommend:
+
+- **A / Ship Mode / Level 1** when the user gives no special risk context, wants speed, is on a sandbox or normal dev machine, or simply pasted the README prompt.
+- **B / Co-Pilot Mode / Level 2** when the user mentions learning, watching, auditing commands, curiosity, or wanting to understand what happens.
+- **C / Glass Box Mode / Level 3** when the user mentions a work machine, production, sensitive files, regulated environment, unfamiliar repo, or wanting approval before actions.
+
+If the user answers `A`, use **Level 1**. If `B`, use **Level 2**. If `C`, use **Level 3**. If the user doesn't answer, can't be reached, or the session is non-interactive, use the recommended lane; if no lane is clearly recommended, use **A / Level 1**. (If you run `install.sh`, pass the selected level with `--level N`, set `AOD_LEVEL=N`, or let it default to 1 when non-interactive.)
+
+## Trust levels
 
 All three levels share the **same `ask` seatbelt and the same hooks**; they differ only in `defaultMode` + `allow`. Use the chosen level's `permissions` block below as the settings' `permissions`, and keep the template's `hooks` block as-is.
 
