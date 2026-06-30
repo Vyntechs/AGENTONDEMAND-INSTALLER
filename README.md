@@ -1,16 +1,33 @@
 # Universal AI Engineering Operating System for Claude Code
 
-This is one engineer's give-everything Claude Code setup, packaged so you can drop it onto your own machine in one paste. It turns a default Claude Code install into a **director's control plane**: it builds and pressure-tests its own agents on demand, plans before it acts, verifies before it calls anything done, compounds its own mistakes into a lessons file, and delegates work through the file system instead of holding it all in one chat.
+This is a one-paste upgrade for Claude Code. It gives Claude a working operating system for software projects: clear rules, safety hooks, a seed agent that can build more agents, and a verification habit that makes "done" mean something.
 
-The install starts with a tiny **Momentum Match**: Claude reads your situation, shows three elegant Markdown cards, marks the best lane `(Recommended)`, and lets you answer with one letter. No blank form. No hand-merged config. No "tell me your workflow" homework before the useful part starts.
+In plain English: it turns Claude from a helpful chat window into a steadier engineering partner. It plans before it acts, checks its work before it celebrates, remembers corrections, and knows when to hand work to a fresh agent instead of trying to hold everything in one conversation.
+
+The install starts with **Momentum Match**: Claude reads the situation, shows three simple lanes, marks one `(Recommended)`, and lets you answer with one letter. No blank form. No hand-merged config. No "describe your workflow" homework before anything useful happens.
 
 Nothing in here is personal or secret. It's a *universal* `CLAUDE.md` plus the small enforcement layer that makes the rules actually fire. It works identically for any person, project, company, or domain — point it at your own repos and go.
 
 ---
 
+## Start here
+
+If you are not technical: this installs a set of instructions and safety checks for Claude Code. It does **not** rewrite your projects, publish your code, or send your data anywhere.
+
+If you are technical: this installs a global `~/.claude` operating layer: `CLAUDE.md`, six fail-open hooks, a settings merge, and one seed agent for building project-specific agents on demand.
+
+| What it changes | What it leaves alone |
+| --- | --- |
+| Files under `~/.claude` | Your project repositories |
+| Claude Code permissions and hooks | Your source code |
+| Claude's working rules | Your secrets and data |
+| One seed agent file | GitHub visibility, remotes, and branches |
+
+The final manual step is always the same: start a new Claude Code session so the hooks load.
+
 ## What it actually does
 
-A long-running agent session drifts. Under load it forgets the rules buried in its instructions, starts grinding tasks inline instead of delegating, and asserts "done" without ever running a check. This setup fixes that with two layers:
+Long-running agent sessions drift. Under load, they forget rules buried in instructions, grind tasks inline instead of delegating, and say "done" without running a check. This setup fixes that with two layers:
 
 1. **The operating system** (`CLAUDE.md`) — the rules: build the tool instead of grinding the task, plan before acting, spin the build out to a fresh-context worker, "done" means a check ran, compound every correction, one writer per artifact, name the workflow pattern, stop at real gates but execute resolved orders.
 2. **The enforcement layer** (`hooks/` + `settings.json`) — because rules in prose get skipped under load, six hooks make the load-bearing ones fire *mechanically* right before the model acts (or block the stop). **Every hook fails open:** any parse error, missing tool, or odd input → it does nothing and gets out of the way. A missed nudge is a soft miss; a false block would be a disaster, so the hooks never block legitimate work on their own bug. Fail-open covers errors and missing tools, not intent: a gate will occasionally block legitimate work *by design* (a forced spin-out, a "name your pattern" nudge) — but every gate carries an override token, and you can delete any hook you don't want.
