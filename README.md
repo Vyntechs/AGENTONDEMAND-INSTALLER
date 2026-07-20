@@ -1,36 +1,14 @@
 # Universal AI Engineering Operating System for Claude Code
 
-This is a one-paste upgrade for Claude Code. It gives Claude a working operating system for software projects: clear rules, safety hooks, a seed agent that can build more agents, and a verification habit that makes "done" mean something.
+An opinionated Claude Code setup for people who want clearer rules, safety hooks, a seed agent, and a verification habit that makes “done” mean something. It installs a global `~/.claude` layer: `CLAUDE.md`, six fail-open hooks, merged settings, and one seed agent.
 
-In plain English: it turns Claude from a helpful chat window into a steadier engineering partner. It plans before it acts, checks its work before it celebrates, remembers corrections, and knows when to hand work to a fresh agent instead of trying to hold everything in one conversation.
+**Safety boundary:** it writes only under `~/.claude`; it does not rewrite project repositories, publish code, change GitHub state, or send your data anywhere. Existing files are backed up, and `settings.json` is merged rather than replaced.
 
-The install starts with **Momentum Match**: Claude reads the situation, shows three simple lanes, marks one `(Recommended)`, and lets you answer with one letter. No blank form. No hand-merged config. No "describe your workflow" homework before anything useful happens.
+**Install:** `git clone https://github.com/Vyntechs/AGENTONDEMAND-INSTALLER.git && cd AGENTONDEMAND-INSTALLER && bash install.sh`
 
-Nothing in here is personal or secret. It's a *universal* `CLAUDE.md` plus the small enforcement layer that makes the rules actually fire. It works identically for any person, project, company, or domain — point it at your own repos and go.
+The installer starts with **Momentum Match**—choose a trust level with one letter—then verifies what landed. Start a new Claude Code session afterward so the hooks load.
 
----
-
-## Start here
-
-If you are not technical: this installs a set of instructions and safety checks for Claude Code. It does **not** rewrite your projects, publish your code, or send your data anywhere.
-
-If you are technical: this installs a global `~/.claude` operating layer: `CLAUDE.md`, six fail-open hooks, a settings merge, and one seed agent for building project-specific agents on demand.
-
-| What it changes | What it leaves alone |
-| --- | --- |
-| Files under `~/.claude` | Your project repositories |
-| Claude Code permissions and hooks | Your source code |
-| Claude's working rules | Your secrets and data |
-| One seed agent file | GitHub visibility, remotes, and branches |
-
-The final manual step is always the same: start a new Claude Code session so the hooks load.
-
-## What it actually does
-
-Long-running agent sessions drift. Under load, they forget rules buried in instructions, grind tasks inline instead of delegating, and say "done" without running a check. This setup fixes that with two layers:
-
-1. **The operating system** (`CLAUDE.md`) — the rules: build the tool instead of grinding the task, plan before acting, spin the build out to a fresh-context worker, "done" means a check ran, compound every correction, one writer per artifact, name the workflow pattern, stop at real gates but execute resolved orders.
-2. **The enforcement layer** (`hooks/` + `settings.json`) — because rules in prose get skipped under load, six hooks make the load-bearing ones fire *mechanically* right before the model acts (or block the stop). **Every hook fails open:** any parse error, missing tool, or odd input → it does nothing and gets out of the way. A missed nudge is a soft miss; a false block would be a disaster, so the hooks never block legitimate work on their own bug. Fail-open covers errors and missing tools, not intent: a gate will occasionally block legitimate work *by design* (a forced spin-out, a "name your pattern" nudge) — but every gate carries an override token, and you can delete any hook you don't want.
+**Limitation:** this is a reusable, plain-text Claude Code configuration—not autonomous proof of engineering quality. Read it, keep what fits, and change or remove what does not.
 
 ---
 
