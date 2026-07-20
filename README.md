@@ -10,6 +10,8 @@ The installer starts with **Momentum Match**—choose a trust level with one let
 
 **Limitation:** this is a reusable, plain-text Claude Code configuration—not autonomous proof of engineering quality. Read it, keep what fits, and change or remove what does not.
 
+Independent community project. Claude and Claude Code are Anthropic products; this project is not affiliated with or endorsed by Anthropic. The installer itself has no telemetry or upload path; using Claude Code remains subject to Anthropic's terms and data practices.
+
 ---
 
 ## Install
