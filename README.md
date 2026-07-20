@@ -2,7 +2,7 @@
 
 An opinionated Claude Code setup for people who want clearer rules, safety hooks, a seed agent, and a verification habit that makes “done” mean something. It installs a global `~/.claude` layer: `CLAUDE.md`, six fail-open hooks, merged settings, and one seed agent.
 
-**Safety boundary:** it writes only under `~/.claude`; it does not rewrite project repositories, publish code, change GitHub state, or send your data anywhere. Existing files are backed up, and `settings.json` is merged rather than replaced.
+**Safety boundary:** persistent changes are limited to `~/.claude`; temporary files are used and removed during installation. It does not rewrite project repositories, publish code, change GitHub state, or send your data anywhere. Existing files are backed up, and `settings.json` is merged rather than replaced.
 
 **Install:** `git clone https://github.com/Vyntechs/AGENTONDEMAND-INSTALLER.git && cd AGENTONDEMAND-INSTALLER && bash install.sh`
 
